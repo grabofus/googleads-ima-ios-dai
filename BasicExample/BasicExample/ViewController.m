@@ -75,7 +75,8 @@ static NSString *const kVideoID = @"tears-of-steel";
 - (void)requestStream {
   // Create an ad display container for ad rendering.
   IMAAdDisplayContainer *adDisplayContainer =
-      [[IMAAdDisplayContainer alloc] initWithAdContainer:self.videoView companionSlots:nil];
+      [[IMAAdDisplayContainer alloc] initWithAdContainer:self.videoView viewController:self companionSlots:nil];
+    
   // Create an IMAAVPlayerVideoDisplay to give the SDK access to your video player.
   IMAAVPlayerVideoDisplay *imaVideoDisplay =
       [[IMAAVPlayerVideoDisplay alloc] initWithAVPlayer:self.contentPlayer];
@@ -84,6 +85,11 @@ static NSString *const kVideoID = @"tears-of-steel";
   IMALiveStreamRequest *request = [[IMALiveStreamRequest alloc] initWithAssetKey:kAssetKey
                                                               adDisplayContainer:adDisplayContainer
                                                                     videoDisplay:imaVideoDisplay];
+    
+  NSLog(@"[TEST]: Setting initial ad tag parameters.");
+  NSDictionary<NSString *, NSString *> *adTagParameters = @{ @"testKey" : @"testValue" };
+  request.adTagParameters = adTagParameters;
+
   // VOD request. Comment out the IMALiveStreamRequest above and uncomment this IMAVODStreamRequest
   // to switch from a livestream to a VOD stream.
   /*IMAVODStreamRequest *request =
@@ -143,6 +149,9 @@ static NSString *const kVideoID = @"tears-of-steel";
     }
     case kIMAAdEvent_AD_PERIOD_ENDED: {
       NSLog(@"Ad period ended");
+      NSLog(@"[TEST]: Replacing ad tag parameters...");
+      NSDictionary<NSString *, NSString *> *adTagParameters = @{ @"testKey2" : @"testValue2" };
+      [self.streamManager replaceAdTagParameters:adTagParameters];
       break;
     }
     default:
